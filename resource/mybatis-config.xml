@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  <configuration>
+  
+  <!-- 别名 -->
+  	<typeAliases>
+  	    <typeAlias alias="HashMap" 				type="java.util.HashMap" />
+  	    <typeAlias alias="Map" 				    type="java.util.Map" />
+        <typeAlias alias="list" 				type="java.util.List" />
+		<typeAlias alias="String" 				type="java.lang.String" />
+		<typeAlias alias="Integer" 				type="java.lang.Integer" />
+		<typeAlias alias="LinkedHashMap" 		type="java.util.LinkedHashMap" />
+		
+
+  	</typeAliases>
+  	
+  	<!-- 配置sql映射文件 -->
+  	<mappers>
+
+  	</mappers>
+
+  </configuration>
