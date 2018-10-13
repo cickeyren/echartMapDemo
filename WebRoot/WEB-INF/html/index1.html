@@ -178,7 +178,25 @@
         myChart.hideLoading();
         echarts.registerMap('china', chinaJson);
         myChart.setOption(option = {
+        	visualMap: {
+        			show: true,
+                    min: 0,
+                    max: 10,
+                    left: 'left',
+                    top: 'bottom',
+                    text: ['高','低'], // 文本，默认为数值文本
+                    seriesIndex: [1],                   //必须设置此项,否则会覆盖标注点颜色
+                    realtime: true,
+                    calculable: true,
+                    inRange: {
+                        color: ['lightskyblue', 'yellow', 'orangered']
+                    },
+                    textStyle: {
+                        color: 'lime'
+                    }
+            },
             geo: {
+            	name: '数量',
                 map: 'china',
                 roam: true,
                 label: {
@@ -189,6 +207,7 @@
                         }
                     }
                 },
+                data: [10,10,20,40,50,40,70,70,70,80,1,45,74,54,84],
                 itemStyle: {
                     normal: {
                         borderColor: 'rgba(0, 0, 0, 0.2)'

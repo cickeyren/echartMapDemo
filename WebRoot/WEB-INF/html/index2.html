@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html style="height: 90%">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+</head>
+
+<body style="width: 60%;height: 100%;margin-left: calc(20% - 2px);padding: 10px;border: 1px solid #e3e3e3;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);">
+
+    <div id="main" style="height: 100%"></div>
+    <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="js/echarts_map.js"></script>
+    <script type="text/javascript" src="js/jiangsu.js"></script>
+    <script>
+  //初始化ECharts实例
+    var myChart = echarts.init(document.getElementById('main'));
+    var option = {
+        title: {
+            text: '江苏',
+            subtext: '地图'
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter:function (params) {
+                var res = '';
+                res+=params['data'].name+'</br>';
+                res+='数量' +' : '+params['data'].value+'</br>';            
+                return res;
+            }
+            //formatter: '{b}<br/>{c}'
+        },//鼠标放在地图上时，显示的内容及样式控制
+        visualMap: {
+            show: true,//色系条是否显示
+            min: 0,
+            max: 1000,//取其区间值就代表色系inRange中的一种颜色
+            left: 'left',
+            top: 'bottom',
+            text: ['高', '低'], // 文本，默认为数值文本
+            calculable: true,
+            inRange:{
+                color: ['lightskyblue', 'yellow', 'orangered'],//上色范围
+            }
+        },//给地图上色
+        series: [{
+            name: '江苏省',
+            type: 'map',
+            mapType: 'jiangsu',
+            selectedMode : 'single',
+            roam: true,
+            label: {
+                normal: {show: true},
+                emphasis: {show: true}
+            },
+            itemStyle: {
+                normal: {
+                    borderColor: '#fff',
+                    areaColor: '#fff',
+                    borderWidth: 2,
+                },//正常样式
+                emphasis: {
+                    areaColor: 'red',
+                    borderWidth: 1,
+                    borderColor: 'yellow',
+                }//鼠标事件区块样式
+            },
+            data:[
+            {name: '盐城市',value:400},
+            {name: '徐州市',value:200},
+            {name: '淮安市',value:300},
+            {name: '南通市',value:900},
+            {name: '苏州市',value:500},
+            {name: '宿迁市',value:600},
+            {name: '连云港市',value:700},
+            {name: '扬州市',value:200},
+            {name: '南京市',value:800},
+            {name: '泰州市',value:100},
+            {name: '无锡市',value:200},
+            {name: '常州市',value:200},
+            {name: '镇江市',value:100},
+            ],//value的值是上面visualMap属性中设置的颜色色系区间的值，即0~1000
+            label: {
+                normal: {
+                    show: true,
+                    formatter:function(val){
+                        var area_content =  '{a|' + val.name + '}' + '-' + '{b|' + val.data.value + '}';
+                        return area_content.split("-").join("\n");
+                    },//让series 中的文字进行换行
+                    rich: {
+                        a: {
+                            color: 'black'
+                        },
+                        b: {
+                            color: 'yellow',
+                            fontFamily: 'Microsoft YaHei',
+                            fontSize: 14,
+                        }
+                    },//富文本样式,就是上面的formatter中'{a|'和'{b|'
+                },
+                emphasis: {show: true}
+            },//地图中文字内容及样式控制
+        }]
+    };
+    myChart.setOption(option, true);
+    myChart.on('click', function(params){
+        //alert(1);
+        console.log(params);//此处写点击事件内容
+    });//点击事件，此事件还可以用到柱状图等其他地图
+    </script>
+</body>
+
+</html>
