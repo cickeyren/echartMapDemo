@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="initial-scale=1.0,user-scalable=no"/>   
+    <style type="text/css">
+        body,html,#allmap{
+            width:100%;
+            height:100%;
+            overflow:hidden;
+            margin:0;
+            font-family:"宋体";
+        }
+    </style>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=dAGNFXFqNyptRga4zbXURNV93Q6ldbA7"></script>
+    <title>南通到上海</title>
+</head>
+<body>
+    <div id="setlocation">
+       <p>左击选择起点,右击选择终点</p>
+        起点:<input id="start" type="text" value="120.899291, 31.992919"/>    <!--起点和终点的经纬度可以用百度地图获取-->
+        终点:<input id="end" type="text" value="121.479965, 31.242351"/>     
+        <button id="btnDri" onclick="drive()">出发</button>
+    </div>
+
+    <div id="allmap" ></div>
+</body>
+</html>
+
+<script type="text/javascript">
+    //百度地图api功能，GPS功能-单点沿直线运动
+    var map = new BMap.Map("allmap");
+    map.centerAndZoom(new BMap.Point(120.899291,31.992919), 10);  //初始坐标点设置，缩放层级为12
+    map.addControl(new BMap.MapTypeControl());   //添加地图类型控件
+    map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+
+    //点选起始点的坐标
+
+    function showInfo(e) {
+        document.getElementById("start").value = e.point.lng + "," + e.point.lat;
+
+        alert("起点的经纬度为：" + e.point.lng + "," + e.point.lat);
+    }
+    map.addEventListener("click", showInfo);
+
+    function showInfo2(e2) {
+        document.getElementById("end").value = e2.point.lng + "," + e2.point.lat;
+
+        alert("终点的经纬度为："+e2.point.lng + "," + e2.point.lat);
+    }
+    map.addEventListener("rightclick",showInfo2);  
+
+    function drive() {
+
+    //从输入框中获取起始点的坐标
+        var alng, alat, blng, blat;
+
+        alng = document.getElementById("start").value.split(",")[0];
+        alat = document.getElementById("start").value.split(",")[1];
+        blng = document.getElementById("end").value.split(",")[0];
+        blat = document.getElementById("end").value.split(",")[1];
+
+  //     alert(alng + "\t" + alat + "\n" + blng + "\t" + blat);
+
+
+    var myP1 = new BMap.Point(alng,alat);  
+    var myP2 = new BMap.Point(blng,blat);  
+
+    var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/Mario.png",
+
+        new BMap.Size(32, 70),
+        {
+            //单点标记图
+            imageOffset: new BMap.Size(0, 0)  //图片偏移量，以对准标记点中心
+        });
+    var driving2 = new BMap.DrivingRoute(map,
+        {
+            renderOptions: { //结果呈现设置
+                map: map,
+                autoViewport: true,  //检索结束后自动调整地图视野
+                enableDragging: true   //起终点可进行拖拽 
+            },
+            policy: BMAP_DRIVING_POLICY_LEAST_TIME //驾车方案的策略配置,最少时间
+
+
+        });    //创建一个驾车导航实例
+
+    driving2.search(myP1, myP2);    //显示检索路线
+
+    window.run = function () {
+        var driving = new BMap.DrivingRoute(map);
+        driving.search(myP1, myP2);
+        driving.setSearchCompleteCallback(function () {
+            var pts = driving.getResults().getPlan(0).getRoute(0).getPath();  //通过驾车实例获取一系列点的数组
+            var paths = pts.length; //获得的点的数量
+
+            var marioMK = new BMap.Marker(pts[0], { icon: myIcon });
+            map.addOverlay(marioMK);
+            i = 0;
+
+            function restMKPoint(i) {
+                marioMK.setPosition(pts[i]);
+                if (i < paths) {
+                    setTimeout(function () {
+                        i++;
+                        restMKPoint(i);
+                    },50);
+                }
+            }
+            setTimeout(function () {
+                restMKPoint(5);
+            }, 50)
+
+        });
+    }
+    setTimeout(function () {
+        run();
+
+    },100);
+    }
+</script>

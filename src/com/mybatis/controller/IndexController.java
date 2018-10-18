@@ -46,4 +46,25 @@ public class IndexController {
 
 		return "/index6";
 	}
+	@RequestMapping(value = "/index7.html")
+	public String index7(HttpServletRequest request) {
+
+		return "/index7";
+	}
+	@RequestMapping(value = "/index8.html")
+	public String index8(HttpServletRequest request) {
+
+		return "/index8";
+	}
+	@RequestMapping(value = "/index9.html")
+	public String index9(HttpServletRequest request) {
+
+		return "/index9";
+	}
+	@RequestMapping(value = "/index10.html")
+	public String index10(HttpServletRequest request) {
+
+		return "/index10";
+	}
+	
 }

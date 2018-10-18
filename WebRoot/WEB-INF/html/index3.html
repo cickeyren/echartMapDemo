@@ -13,13 +13,16 @@
     <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
     <script type="text/javascript" src="js/echarts_map.js"></script>
     <script type="text/javascript" src="js/china.js"></script>
+    <script type="text/javascript" src="js/jiangsu.js"></script>
     <script>
+    var title = "地图数据统计";
     function randomData() {
 		return Math.round(Math.random()*500);
 	}
+    var colors = ['lightskyblue','yellow', 'orangered'];
 	var mydata = [
 		{name: '北京市',value: randomData() },{name: '天津市',value: randomData() },
-		{name: '上海市',value: randomData() },{name: '重庆市',value: randomData() },
+ 		{name: '上海市',value: randomData() },{name: '重庆市',value: randomData() },
 		{name: '河北省',value: randomData() },{name: '河南省',value: randomData() },
 		{name: '云南省',value: randomData() },{name: '辽宁省',value: randomData() },
 		{name: '湖南省',value: randomData() },{name: '湖北省',value: randomData() },
@@ -33,29 +36,47 @@
 		{name: '海南省',value: randomData() },{name: '台湾省',value: randomData() },
 		{name: '黑龙江省',value: randomData() },
 		{name: '新疆维吾尔自治区',value: randomData() },{name: '西藏自治区',value: randomData() },
-		{name: '内蒙古自治区',value: randomData() },{name: '广西壮族自治区',value: randomData() },
+		{name: '内蒙古自治区',value: randomData() },{name: '广西壮族自治区',value: randomData() }, 
 		{name: '宁夏回族自治区',value: randomData() },
 		{name: '香港特别行政区',value: randomData() },{name: '澳门特别行政区',value: randomData() }
 	];
+	var mydata1 = [
+	              {name: '盐城市',value:randomData()},
+	              {name: '徐州市',value:randomData()},
+	              {name: '淮安市',value:randomData()},
+	              {name: '南通市',value:randomData()},
+	              {name: '苏州市',value:randomData()},
+	              {name: '宿迁市',value:randomData()},
+	              {name: '连云港市',value:randomData()},
+	              {name: '扬州市',value:randomData()},
+	              {name: '南京市',value:randomData()},
+	              {name: '泰州市',value:randomData()},
+	              {name: '无锡市',value:randomData()},
+	              {name: '常州市',value:randomData()},
+	              {name: '镇江市',value:randomData()},
+	];
     var myChart = echarts.init(document.getElementById('main'), 'shine');
-	option = {
+    var option = {
 	  title: {
-	      text: '全国地图',
+	      text: title,
 	      subtext: '随机数',
 	      left: 'center'
 	  },
 	  tooltip: {
 	      trigger: 'item'
 	  },
-/* 	  visualMap: {
+ 	  visualMap: {
 	      min: 0,
 	      max: 500,
 	      left: 'left',
 	      top: 'bottom',
 	      text: ['高','低'],           // 文本，默认为数值文本
-	      calculable: true
-	  }, */
-	  visualMap: {
+	      calculable: true,
+	      inRange: {
+	    	  color: colors
+          }
+	  },
+	  /* visualMap: {
 			show : true,
 			x: 'left',
 			y: 'bottom',
@@ -63,7 +84,7 @@
 				{start: 400, end: 500},{start: 300, end: 400},{start: 200, end: 300},
 				{start: 100, end: 200},{start: 0, end: 100},
 			]
-		},
+		}, */
 	  toolbox: {
 	      show: false,
 	      orient: 'vertical',
@@ -79,17 +100,12 @@
 	      {
 	           itemStyle: {
 	                  normal: {
-	                              color: function (params) {
-	                                  var colorList = [
-	                                    '#C1232B', '#B5C334', '#FCCE10', '#E87C25', '#27727B',
-	                                     '#FE8463', '#9BCA63', '#FAD860', '#F3A43B', '#60C0DD',
-	                                     '#D7504B', '#C6E579', '#F4E001', '#F0805A', '#26C0C0'
-	                                  ];
-	                                  return colorList[params.dataIndex]
-	                              },
-	                              
+	                              /* color: function (params) {
+	                                  return colorList[params.dataIndex];
+	                              }   */  
+	                              label:{show:true}
 	                          }
-	                      },
+	          },
 	          name: '数量',
 	          type: 'map',
 	          mapType: 'china',
@@ -106,7 +122,18 @@
 	      }
 	  ]
 	};                
-	myChart.setOption(option);  
+	myChart.setOption(option);
+    //下钻其实就是点击事件，切换脚本 
+    myChart.on('click', function (chinaParam) {
+        if(chinaParam.name == '江苏省'){
+            var option = myChart.getOption();
+            option.series[0].map = 'jiangsu';
+            //option.series[0].mapType = 'jiangsu';
+            option.series[0].data = mydata1;
+            myChart.setOption(option);
+           
+        }                       
+    });
     </script>
 </body>
 
