@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>轨迹慢放加坐标</title>
+    <title>轨迹回放加坐标</title>
     <style type="text/css">
         body, html{width: 100%;height: 100%;margin:0;font-family:"微软雅黑";}
         #map_canvas{width:100%;height:500px;}
@@ -21,24 +21,26 @@
     <script>
     var marker;
     var map = new BMap.Map('map_canvas');
-    map.enableScrollWheelZoom();
-    map.centerAndZoom();
+    map.enableScrollWheelZoom();//启动鼠标滚轮操作
+    map.centerAndZoom();// 初始化地图 
     var lushu;
-//     实例化一个驾车导航用来生成路线
-      var drv = new BMap.DrivingRoute('北京', {
+	//实例化一个驾车导航用来生成路线
+    var drv = new BMap.DrivingRoute('北京', {
          onSearchComplete: function(res) {
-            if (drv.getStatus() == BMAP_STATUS_SUCCESS) {
-      var plan = res.getPlan(0);
-     var arrPois =[];
-                    for(var j=0;j<plan.getNumRoutes();j++){
-       var route = plan.getRoute(j);
-       arrPois= arrPois.concat(route.getPath());
-     }
-
-    //    map.addOverlay(new BMap.Polyline(arrPois, {strokeColor: '#111'})); //不画线
+            if (drv.getStatus() == BMAP_STATUS_SUCCESS){
+      			var plan = res.getPlan(0);
+     			var arrPois =[];
+                for(var j=0;j<plan.getNumRoutes();j++){
+       				var route = plan.getRoute(j);
+       				arrPois= arrPois.concat(route.getPath());
+     			}
+    //map.addOverlay(new BMap.Polyline(arrPois, {strokeColor: '#111'})); //不画线
     map.setViewport(arrPois);
+    //汽车图标，设置图片偏移
+    var myIcon = new BMap.Icon('http://developer.baidu.com/map/jsdemo/img/car.png', new BMap.Size(52,26),{anchor : new BMap.Size(27, 13)})
+  
     marker=new BMap.Marker(arrPois[0],{
-        icon  : new BMap.Icon('http://developer.baidu.com/map/jsdemo/img/car.png', new BMap.Size(52,26),{anchor : new BMap.Size(27, 13)})
+        icon:myIcon
     });
     var label = new BMap.Label("粤A30780",{offset:new BMap.Size(0,-30)});
     label.setStyle({border:"1px solid rgb(204, 204, 204)",color: "rgb(0, 0, 0)",borderRadius:"10px",padding:"5px",background:"rgb(255, 255, 255)",});
@@ -48,17 +50,17 @@
         var pointsArr=[initPos,targetPos];  //点数组
         var me = this,
         //当前的帧数
-                currentCount = 0,
+        currentCount = 0,
         //步长，米/秒
-                timer = 1,
-                step = this._opts.speed / (1000 / timer),
+        timer = 10,//数值越小速度越慢
+        step = this._opts.speed / (1000 / timer),
         //初始坐标
-                init_pos = this._projection.lngLatToPoint(initPos),
+        init_pos = this._projection.lngLatToPoint(initPos),
         //获取结束点的(x,y)坐标
-                target_pos = this._projection.lngLatToPoint(targetPos),
+        target_pos = this._projection.lngLatToPoint(targetPos),
         //总的步长
-                count = Math.round(me._getDistance(init_pos, target_pos) / step);
-        //显示折线 syj201607191107
+        count = Math.round(me._getDistance(init_pos, target_pos) / step);
+        //显示折线
         this._map.addOverlay(new BMap.Polyline(pointsArr, {
             strokeColor : "blue",
             strokeWeight : 5,
@@ -69,36 +71,33 @@
             me._moveNext(++me.i);
             return;
         }
-
         me._intervalFlag = setInterval(function() {
             //两点之间当前帧数大于总帧数的时候，则说明已经完成移动
             if (currentCount >= count) {
                 clearInterval(me._intervalFlag);
-
                 if(me.i < me._path.length){
                     var data_info =[];
                     var cc=me.i;
                     if(me.i%33==0){
-                        for ( var i in arrPois[cc] ){
-                            var str =arrPois[cc][ i ];
+                        for ( var i in arrPois[cc]){
+                            var str =arrPois[cc][i];
                             data_info.push( str );
                         }
                     }
-
-//                    data_info.push(arrPois[cc]);
-//                    console.log(data_info)
+//                  data_info.push(arrPois[cc]);
+//                  console.log(data_info)
                     var opts = {
                         width : 250,     // 信息窗口宽度
                         height: 80,     // 信息窗口高度
                         title : "信息窗口" , // 信息窗口标题
                         enableMessage:true//设置允许信息窗发送短息
                     };
-                        for(var i=0;i<data_info.length;i++){
-                            var marker = new BMap.Marker(new BMap.Point(data_info[0],data_info[1]));  // 创建标注
-                            var content = data_info[0]+","+data_info[1];
-                            map.addOverlay(marker);               // 将标注添加到地图中
-                            addClickHandler(content,marker);
-                        }
+                    for(var i=0;i<data_info.length;i++){
+                        var marker = new BMap.Marker(new BMap.Point(data_info[0],data_info[1]));  // 创建标注
+                        var content = data_info[0]+","+data_info[1];
+                        map.addOverlay(marker);               // 将标注添加到地图中
+                        addClickHandler(content,marker);
+                    }
                     function addClickHandler(content,marker){
                         marker.addEventListener("click",function(e){
                             openInfo(content,e)
@@ -110,12 +109,7 @@
                         var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
                         map.openInfoWindow(infoWindow,point); //开启信息窗口
                     }
-                  /*  var cc=me.i+20;
-                    var marker = new BMap.Marker( arrPois[cc]);
-                    map.addOverlay(marker);
-                    marker.setLabel(new BMap.Label("我是哈哈",{offset:new BMap.Size(20,-10)}));//消息框*/
                 }
-
                 //移动的点已经超过总的长度
                 if(me.i > me._path.length){
                     return;
@@ -125,8 +119,8 @@
             }else {
                 currentCount++;
                 var x = effect(init_pos.x, target_pos.x, currentCount, count),
-                        y = effect(init_pos.y, target_pos.y, currentCount, count),
-                        pos = me._projection.pointToLngLat(new BMap.Pixel(x, y));
+                    y = effect(init_pos.y, target_pos.y, currentCount, count),
+                    pos = me._projection.pointToLngLat(new BMap.Pixel(x, y));
                 //设置marker
                 if(currentCount == 1){
                     var proPos = null;
@@ -150,9 +144,9 @@
         },timer);
     };
     lushu = new BMapLib.LuShu(map,arrPois,{
-        defaultContent:"粤A30780",//"从天安门到百度大厦"
+        defaultContent:"粤A30780",
         autoView:true,//是否开启自动视野调整，如果开启那么路书在运动过程中会根据视野自动调整
-        icon  : new BMap.Icon('http://developer.baidu.com/map/jsdemo/img/car.png', new BMap.Size(52,26),{anchor : new BMap.Size(27, 13)}),
+        icon:myIcon,
         speed: 4500,
         enableRotation:true,//是否设置marker随着道路的走向进行旋转
         landmarkPois:[
@@ -162,16 +156,15 @@
     });
 
     marker.addEventListener("click",function(){
-        marker.enableMassClear();   //设置后可以隐藏改点的覆盖物
+        marker.enableMassClear();//设置后可以隐藏改点的覆盖物
         marker.hide();
         lushu.start();
         //map.clearOverlays();  //清除所有覆盖物
     });
-    }
-            }
-      });
+  }
+ }
+});
     drv.search('天安门', '百度大厦');
-
     //绑定事件
     $("run").onclick = function(){
         marker.enableMassClear(); //设置后可以隐藏改点的覆盖物

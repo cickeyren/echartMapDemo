@@ -45,7 +45,7 @@ body {
 			new BMap.Point(114.00510, 22.550000),
 			new BMap.Point(114.00515, 22.550000),
 			new BMap.Point(114.00525, 22.550400),
-			new BMap.Point(114.00537, 22.549500) ];
+			new BMap.Point(114.00537, 22.549500)];
 
 	var map; //百度地图对象
 	var car; //汽车图标
@@ -54,13 +54,11 @@ body {
 
 	var timer; //定时器
 	var index = 0; //记录播放到第几个point
-	
-	var myIcon = new BMap.Icon(
-			"./img/car0.jpg",
-			new BMap.Size(60, 67), {
-				imageOffset : new BMap.Size(0, 0)//设置图片偏移
-			});//卡车
-	var followChk, playBtn, pauseBtn, resetBtn; //几个控制按钮
+
+	var myIcon = new BMap.Icon("img/car3.png", new BMap.Size(119, 48), {//小车图片 
+	      					imageOffset: new BMap.Size(0, 0)    //图片的偏移量。为了是图片底部中心对准坐标点。 
+	}); 
+	var followChk, playBtn, pauseBtn, resetBtn; //控制按钮
 
 	function init() {
 		followChk = document.getElementById("follow");
@@ -99,7 +97,7 @@ body {
 
 			//显示小车子
 			label = new BMap.Label("", {
-				offset : new BMap.Size(-20, -20)
+				offset : new BMap.Size(-20, -20)//设置偏移量
 			});
 			//car = new BMap.Marker(points[0]);
 			car = new BMap.Marker(points[0],//起始点的经纬度
