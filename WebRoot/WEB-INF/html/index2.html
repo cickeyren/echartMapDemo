@@ -7,19 +7,62 @@
     <title></title>
 </head>
 
-<body style="width: 60%;height: 100%;margin-left: calc(20% - 2px);padding: 10px;border: 1px solid #e3e3e3;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);">
+<body style="width: 90%;height: 100%;border: 1px solid #e3e3e3;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);">
 
-    <div id="main" style="height: 100%"></div>
+    <div id="main" style="width: 100%;height: 100%"></div>
     <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
     <script type="text/javascript" src="js/echarts_map.js"></script>
+    <script type="text/javascript" src="js/china.js"></script>
     <script type="text/javascript" src="js/jiangsu.js"></script>
+    <script type="text/javascript" src="js/nantong.js"></script>
     <script>
-  //初始化ECharts实例
+    function fn(x, n){
+        return parseInt(x/n + 0.5) * n;
+    }
+    function getMax1(array){
+    	var max = Math.max.apply(null,array);
+    	return fn(max,10);
+    };
+    function randomData() {
+		return Math.round(Math.random()*500);
+	}
+    var mydata = [
+      			{name: '北京市',value: randomData() },{name: '天津市',value: randomData() },
+      	 		{name: '上海市',value: randomData() },{name: '重庆市',value: randomData() },
+      			{name: '河北省',value: randomData() },{name: '河南省',value: randomData() },
+      			{name: '云南省',value: randomData() },{name: '辽宁省',value: randomData() },
+      			{name: '湖南省',value: randomData() },{name: '湖北省',value: randomData() },
+      			{name: '安徽省',value: randomData() },{name: '山东省',value: randomData() },
+      			{name: '江苏省',value: randomData() },{name: '浙江省',value: randomData() },
+      			{name: '江西省',value: randomData() },{name: '四川省',value: randomData() },
+      			{name: '甘肃省',value: randomData() },{name: '山西省',value: randomData() },
+      			{name: '陕西省',value: randomData() },{name: '吉林省',value: randomData() },
+      			{name: '福建省',value: randomData() },{name: '贵州省',value: randomData() },
+      			{name: '广东省',value: randomData() },{name: '青海省',value: randomData() },
+      			{name: '海南省',value: randomData() },{name: '台湾省',value: randomData() },
+      			{name: '黑龙江省',value: randomData() },{name: '宁夏回族自治区',value: randomData() },
+      			{name: '新疆维吾尔自治区',value: randomData() },{name: '西藏自治区',value: randomData() },
+      			{name: '内蒙古自治区',value: randomData() },{name: '广西壮族自治区',value: randomData() },
+      			{name: '香港特别行政区',value: randomData() },{name: '澳门特别行政区',value: randomData()},
+                {name: '盐城市',value:randomData()},{name: '徐州市',value:randomData()},
+                {name: '淮安市',value:randomData()},{name: '南通市',value:randomData()},
+                {name: '苏州市',value:randomData()},{name: '宿迁市',value:randomData()},
+                {name: '连云港市',value:randomData()},{name: '扬州市',value:randomData()},
+                {name: '南京市',value:randomData()},{name: '泰州市',value:randomData()},
+                {name: '无锡市',value:randomData()},{name: '常州市',value:randomData()},
+                {name: '镇江市',value:randomData()},
+               	{name: '港闸区',value:randomData()},{name: '崇川区',value:randomData()},{name: '通州区',value:randomData()}
+     ];
+    var valuesarray=[];
+    for (var i=0; i < mydata.length; i++) {
+    	var obj = new Object(); 
+    	valuesarray[i] = parseInt(mydata[i].value);
+    }
+  	//初始化ECharts实例
     var myChart = echarts.init(document.getElementById('main'));
     var option = {
         title: {
-            text: '江苏',
-            subtext: '地图'
+            text:'地图'
         },
         tooltip: {
             trigger: 'item',
@@ -34,52 +77,38 @@
         visualMap: {
             show: true,//色系条是否显示
             min: 0,
-            max: 1000,//取其区间值就代表色系inRange中的一种颜色
+            max: getMax1(valuesarray),//取其区间值就代表色系inRange中的一种颜色
             left: 'left',
             top: 'bottom',
             text: ['高', '低'], // 文本，默认为数值文本
             calculable: true,
             inRange:{
-                color: ['lightskyblue', 'yellow', 'orangered'],//上色范围
+            	color: ['#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']//上色范围
             }
         },//给地图上色
         series: [{
-            name: '江苏省',
+            name: '数量',
             type: 'map',
-            mapType: 'jiangsu',
+            mapType: 'china',
             selectedMode : 'single',
             roam: true,
+            zoom:1.2,
             label: {
                 normal: {show: true},
                 emphasis: {show: true}
             },
             itemStyle: {
                 normal: {
-                    borderColor: '#fff',
-                    areaColor: '#fff',
-                    borderWidth: 2,
+                    borderColor: '#321',
+                    areaColor: '#321'
                 },//正常样式
                 emphasis: {
                     areaColor: 'red',
-                    borderWidth: 1,
-                    borderColor: 'yellow',
+                    borderWidth: 1
                 }//鼠标事件区块样式
             },
-            data:[
-            {name: '盐城市',value:400},
-            {name: '徐州市',value:200},
-            {name: '淮安市',value:300},
-            {name: '南通市',value:900},
-            {name: '苏州市',value:500},
-            {name: '宿迁市',value:600},
-            {name: '连云港市',value:700},
-            {name: '扬州市',value:200},
-            {name: '南京市',value:800},
-            {name: '泰州市',value:100},
-            {name: '无锡市',value:200},
-            {name: '常州市',value:200},
-            {name: '镇江市',value:100},
-            ],//value的值是上面visualMap属性中设置的颜色色系区间的值，即0~1000
+            data:mydata,
+            //value的值是上面visualMap属性中设置的颜色色系区间的值，即0~1000
             label: {
                 normal: {
                     show: true,
@@ -89,7 +118,7 @@
                     },//让series 中的文字进行换行
                     rich: {
                         a: {
-                            color: 'black'
+                            color: '#fff'
                         },
                         b: {
                             color: 'yellow',
@@ -102,12 +131,30 @@
             },//地图中文字内容及样式控制
         }]
     };
-    myChart.setOption(option, true);
-    myChart.on('click', function(params){
-        //alert(1);
-        console.log(params);//此处写点击事件内容
-    });//点击事件，此事件还可以用到柱状图等其他地图
-    </script>
+    myChart.clear();
+  	//使用刚指定的配置项和数据显示图表。
+  	myChart.setOption(option);
+ 	//下钻其实就是点击事件，切换脚本 
+  	myChart.on('click', function (chinaParam) {
+  		if(chinaParam.name == '江苏省'){
+  			var option = myChart.getOption();
+          	option.series[0].map = 'jiangsu';
+          	//option.series[0].mapType = 'jiangsu';
+          	option.series[0].data = mydata;
+          	option.series[0].roam = true;
+          	option.series[0].zoom = 0.75;
+          	myChart.setOption(option);
+      	}
+  		if(chinaParam.name == '南通市'){
+  			var option = myChart.getOption();
+          	option.series[0].map = 'nantong';
+          	option.series[0].data = mydata;
+          	option.series[0].roam = true;
+          	option.series[0].zoom = 0.75;
+          	myChart.setOption(option);
+      	}       
+ 	});//点击事件，此事件还可以用到柱状图等其他地图
+</script>
 </body>
 
 </html>

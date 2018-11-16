@@ -18,7 +18,7 @@
   	
   	<!-- 配置sql映射文件 -->
   	<mappers>
-
+		<mapper resource="mapper/TestMapper.xml"/>
   	</mappers>
 
   </configuration>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+</style>
+<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=dAGNFXFqNyptRga4zbXURNV93Q6ldbA7"></script>
+<title>资产地图</title>
+</head>
+<body>
+<div id="allmap"></div>
+</body>
+</html>
+<script type="text/javascript">
+//新建三个地图上点
+/* 
+var points = [  
+{"lng":120.904847,"lat":31.990214,"id":1,"name":"中南世纪城30幢5-10楼","address":"崇川区中南世纪城"},  
+{"lng":120.924502,"lat":31.986172,"id":2,"name":"中南世纪花城2期22号楼","address":"崇川区中南世纪花城二期"},  
+{"lng":120.925266,"lat":31.984649,"id":3,"name":"中南世纪花城16号楼3层","address":"崇川区中南世纪花城二期"},
+{"lng":120.92558,"lat":31.987734,"id":3,"name":"中南世纪花城19号楼5层","address":"崇川区中南世纪花城二期"},
+{"lng":120.927036,"lat":31.986662,"id":3,"name":"中南世纪花城南区2号楼11层","address":"世纪大道与盘香路交叉口南200米"}, 
+{"lng":120.925544,"lat":31.986678,"id":3,"name":"中南世纪花城西区5号楼10层","address":"崇川区中南世纪花城西区"}, 
+{"lng":120.929066,"lat":31.986509,"id":3,"name":"中南世纪花城东区1号楼","address":"崇川区盘香路附近"}
+];  */
+var datas = [];
+var points=[];
+//创建地图
+var map = new BMap.Map("allmap");   
+//根据url中的获取参数
+var url = window.location.href;//获取url
+var arg = url.split("=");
+var cityName = arg[1];
+$.ajax({
+	 url: 'MapDetail',
+	 type: 'GET',
+	 data: {
+	      "cityName": cityName
+	 },
+	 dataType: 'json',    //返回的数据格式：json/xml/html/script/jsonp/text
+	 success: function (result) {
+	    console.log(result);
+	    datas = result.list;
+	    for (var i=0; i < datas.length; i++) {
+	    	var obj = new Object(); 
+	    	obj.lng = datas[i].FLNG;
+	    	obj.lat = datas[i].FLAT;
+	    	obj.name = datas[i].FNAME;
+	    	obj.address = datas[i].FADDRESS;
+	    	points[i] = obj; 
+	    }
+	   // alert(points);
+ 
+	    map.centerAndZoom(new BMap.Point(120.899291,31.992919),1);  //初始坐标点设置为南通 
+	    map.centerAndZoom("南通");
+	    map.setCurrentCity("南通"); 
+	    map.addControl(new BMap.MapTypeControl());   
+	    map.enableScrollWheelZoom(true);     
+	    addMarker(points);
+	 }
+});	
+
+//创建标注点并添加到地图中
+function addMarker(points) {
+    //循环建立标注点
+    for(var i=0, pointsLen = points.length; i<pointsLen; i++) {
+        var point = new BMap.Point(points[i].lng, points[i].lat); //将标注点转化成地图上的点
+        var marker = new BMap.Marker(point); //将点转化成标注点
+        map.addOverlay(marker);  //将标注点添加到地图上
+        //添加监听事件
+        (function() {
+            var thePoint = points[i];
+            marker.addEventListener("click",
+                function() {
+                showInfo(this,thePoint);
+            });
+         })();  
+    }
+}
+function showInfo(thisMarker,point) {
+    //获取点的信息
+    var sContent = 
+    '<ul style="margin:0 0 5px 0;padding:0.2em 0">'  
+    +'<li style="width:400px;line-height: 26px;font-size: 15px;">'  
+    +'<span style="width:100px;display: inline-block;">资产名称：</span>' + point.name + '</li>'  
+    +'<li style="width:400px;line-height: 26px;font-size: 15px;">'  
+    +'<span style="width:100px;display: inline-block;">资产地址：</span>' + point.address + '</li>'  
+    +'</ul>';
+    var infoWindow = new BMap.InfoWindow(sContent); //创建信息窗口对象
+    thisMarker.openInfoWindow(infoWindow); //图片加载完后重绘infoWindow
+}
+</script>

@@ -15,6 +15,11 @@ public class IndexController {
 	
 	public static final Logger logger = Logger.getLogger(IndexController.class);
 	
+	@RequestMapping(value = "/index.html")
+	public String index(HttpServletRequest request) {
+
+		return "/index";
+	}
 	@RequestMapping(value = "/index1.html")
 	public String index1(HttpServletRequest request) {
 
@@ -66,5 +71,24 @@ public class IndexController {
 
 		return "/index10";
 	}
-	
+	@RequestMapping(value = "/qianxi.html")
+	public String qianxi(HttpServletRequest request) {
+
+		return "/qianxi";
+	}
+	@RequestMapping(value = "/china.html")
+	public String china(HttpServletRequest request) {
+
+		return "/china";
+	}
+	@RequestMapping(value = "/china1.html")
+	public String china1(HttpServletRequest request) {
+
+		return "/china1";
+	}
+	@RequestMapping(value = "/gaode.html")
+	public String gaode(HttpServletRequest request) {
+
+		return "/gaode";
+	}
 }

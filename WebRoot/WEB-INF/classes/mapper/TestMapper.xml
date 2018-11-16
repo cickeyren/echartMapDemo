@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 数据访问层 -->
+<mapper namespace="com.mybatis.dao.TestMapper">
+    <select id="countCity" resultType="HashMap">  
+      	select t.FCITY,COUNT(*) as COUNT from echart_map_test1 t group by t.FCITY;
+    </select>
+    <select id="listCity" resultType="HashMap" parameterType="String">  
+      	select * from echart_map_test1 t WHERE t.FCITY=#{cityName};
+    </select>
+</mapper>
